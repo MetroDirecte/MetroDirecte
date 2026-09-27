@@ -7,10 +7,16 @@ namespace MetroDirecte.API
 {
     class AuthManager
     {
-        public static void LogOut()
+        public async static Task<bool> LogOut()
         {
+            var api = new APIManager();
+
+            await api.GetAsync("/restv3/ws/user/logout?v=4.102.1");
+
             DeleteCredential("token");
             DeleteCredential("userdata");
+
+            return true;
         }
 
         public static JObject GetUserData()

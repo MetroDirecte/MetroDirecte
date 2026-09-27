@@ -20,16 +20,23 @@ namespace MetroDirecte
             this.NavigationCacheMode = NavigationCacheMode.Disabled;
         }
 
+        private async void LogoutButton_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            await AuthManager.LogOut();
+
+            Frame.Navigate(typeof(MainPage));
+            Frame.BackStack.Clear();
+            Frame.ForwardStack.Clear();
+        }
+
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            base.OnNavigatedTo(e);
+
             if (string.IsNullOrWhiteSpace(AuthManager.GetCredential("token")) ||
                 string.IsNullOrWhiteSpace(AuthManager.GetCredential("userdata")))
-            {
-                Frame.Navigate(typeof(MainPage));
-                return;
-            }
-
-            if (!await AuthManager.RenewLogin())
             {
                 Frame.Navigate(typeof(MainPage));
                 return;
