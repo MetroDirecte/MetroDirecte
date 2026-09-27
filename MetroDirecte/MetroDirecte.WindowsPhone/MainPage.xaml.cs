@@ -21,6 +21,30 @@ namespace MetroDirecte
             this.InitializeComponent();
 
             this.NavigationCacheMode = NavigationCacheMode.Disabled;
+
+            this.Loaded += MainPage_Loaded;
+        }
+
+        private async void MainPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.Loaded -= MainPage_Loaded;
+
+            if (!string.IsNullOrWhiteSpace(AuthManager.GetCredential("token")) && !string.IsNullOrWhiteSpace(AuthManager.GetCredential("userdata")))
+            {
+                ConnectionAttempt.Visibility = Visibility.Visible;
+
+                if (await AuthManager.RenewLogin())
+                {
+                    ConnectionAttempt.Visibility = Visibility.Collapsed;
+
+                    Frame.Navigate(typeof(Home));
+                    Frame.BackStack.Clear();
+                    Frame.ForwardStack.Clear();
+                    return;
+                }
+
+                ConnectionAttempt.Visibility = Visibility.Collapsed;
+            }
         }
 
         private string DecodeBase64(string value)
@@ -262,6 +286,8 @@ namespace MetroDirecte
                 LoginButton.IsEnabled = true;
 
                 Frame.Navigate(typeof(Home));
+                Frame.BackStack.Clear();
+                Frame.ForwardStack.Clear();
             }
             catch (Exception err)
             {
@@ -269,14 +295,6 @@ namespace MetroDirecte
                 ErrorText.Text = "une erreur interne s'est produite\n\n" + err.ToString();
             }
         }
-        
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            if (!string.IsNullOrWhiteSpace(AuthManager.GetCredential("token")) && !string.IsNullOrWhiteSpace(AuthManager.GetCredential("userdata")))
-            {
-                Frame.Navigate(typeof(Home));
-                return;
-            }
-        }
+       
     }
 }
