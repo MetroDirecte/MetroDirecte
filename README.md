@@ -1,2 +1,2 @@
 # MetroDirecte
-Un client EcoleDirecte pour Windows Phone 8.1 et plus!
+Un client EcoleDirecte style Metro pour Windows Phone 8.1 et plus!
