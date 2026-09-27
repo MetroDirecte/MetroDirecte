@@ -10,8 +10,7 @@ namespace MetroDirecte.API
     {
         public async Task<string> GetGTKAsync()
         {
-            return await GetAsync("/");
-            await GetAsync("/v3/login.awp?gtk=1&v=4.75.0");
+            await GetAsync("/v3/login.awp?gtk=1&v=4.102.1");
 
             var cookies = filter.CookieManager.GetCookies(
                 new Uri(BaseUrl)
