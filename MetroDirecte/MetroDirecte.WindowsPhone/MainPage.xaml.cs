@@ -14,12 +14,13 @@ namespace MetroDirecte
     {
         private string username;
         private string password;
+        private string uuid;
 
         public MainPage()
         {
             this.InitializeComponent();
 
-            this.NavigationCacheMode = NavigationCacheMode.Required;
+            this.NavigationCacheMode = NavigationCacheMode.Disabled;
         }
 
         private string DecodeBase64(string value)
@@ -38,6 +39,7 @@ namespace MetroDirecte
             if (dataToken == null || dataToken.Type != JTokenType.Object)
             {
                 QcmError.Text = "réponse QCM invalide.";
+                LoginButton.IsEnabled = true;
                 return;
             }
 
@@ -47,6 +49,7 @@ namespace MetroDirecte
             if (questionToken == null || propositionsToken == null)
             {
                 QcmError.Text = "données QCM manquantes.";
+                LoginButton.IsEnabled = true;
                 return;
             }
 
@@ -57,6 +60,7 @@ namespace MetroDirecte
             if (propositionsToken.Type != JTokenType.Array)
             {
                 QcmError.Text = "propositions QCM invalides.";
+                LoginButton.IsEnabled = true;
                 return;
             }
 
@@ -110,11 +114,14 @@ namespace MetroDirecte
             if(qcmcode != 200)
             {
                 ErrorText.Text = "réponse QCM invalide, veuillez réessayer";
+                LoginButton.IsEnabled = true;
                 return;
             }
 
-            string cn = (string)qcmdata["cn"];
-            string cv = (string)qcmdata["cv"];
+            string cn = (string)qcmdata["data"]["cn"];
+            string cv = (string)qcmdata["data"]["cv"];
+
+            api.ResetCacheToken();
 
             string gtk = await api.GetGTKAsync();
 
@@ -127,7 +134,7 @@ namespace MetroDirecte
                     { "isReLogin", false },
                     { "cn", cn },
                     { "cv", cv },
-                    { "uuid", "" },
+                    { "uuid", uuid },
                     { "fa", new JArray()
                         {
                             new JObject()
@@ -149,19 +156,32 @@ namespace MetroDirecte
             string token = (string)data["token"];
             string message = (string)data["message"];
 
-            if (code != 200 && code != 250)
+            if (code != 200)
             {
                 ErrorText.Text = message.ToLower();
+                LoginButton.IsEnabled = true;
                 return;
             }
 
-            FinishLogin(token);
+            FinishLogin(data);
         }
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(uuid))
+                {
+                    uuid = AuthManager.GetCredential("uuid");
+                    
+                    if (string.IsNullOrEmpty(uuid))
+                    {
+                        uuid = Guid.NewGuid().ToString();
+                        AuthManager.SaveCredential("uuid", uuid);
+                    }
+                }
+
+                LoginButton.IsEnabled = false;
                 ErrorText.Text = "";
 
                 username = UsernameBox.Text;
@@ -171,6 +191,7 @@ namespace MetroDirecte
                     string.IsNullOrWhiteSpace(password))
                 {
                     ErrorText.Text = "veuillez remplir tous les champs.";
+                    LoginButton.IsEnabled = true;
                     return;
                 }
 
@@ -186,8 +207,9 @@ namespace MetroDirecte
                     {
                         { "identifiant", username },
                         { "motdepasse", password },
+                        { "sesouvenirdemoi", true },
                         { "isReLogin", false },
-                        { "uuid", "" },
+                        { "uuid", uuid },
                         { "fa", new JArray() }
                     },
                     null,
@@ -203,6 +225,7 @@ namespace MetroDirecte
                 if (code != 200 && code != 250)
                 {
                     ErrorText.Text = message.ToLower();
+                    LoginButton.IsEnabled = true;
                     return;
                 }
 
@@ -220,41 +243,40 @@ namespace MetroDirecte
                     return;
                 }
 
-                FinishLogin(token);
+                FinishLogin(data);
             }
             catch (Exception err)
             {
+                LoginButton.IsEnabled = true;
                 ErrorText.Text = "une erreur interne s'est produite\n\n" + err.ToString();
             }
         }
 
-        private async void FinishLogin(string token)
+        private async void FinishLogin(JObject data)
         {
-            var vault = new PasswordVault();
+            try
+            {
+                AuthManager.SaveCredential("token", (string)data["token"]);
+                AuthManager.SaveCredential("userdata", data["data"]["accounts"][0].ToString());
 
-            vault.Add(new PasswordCredential(
-                "MetroDirecte",
-                "token",
-                token
-            ));
+                LoginButton.IsEnabled = true;
 
-            ErrorText.Text = "success";
+                Frame.Navigate(typeof(Home));
+            }
+            catch (Exception err)
+            {
+                LoginButton.IsEnabled = true;
+                ErrorText.Text = "une erreur interne s'est produite\n\n" + err.ToString();
+            }
         }
-
-        /// <summary>
-        /// Invoked when this page is about to be displayed in a Frame.
-        /// </summary>
-        /// <param name="e">Event data that describes how this page was reached.
-        /// This parameter is typically used to configure the page.</param>
+        
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            // TODO: Prepare page for display here.
-
-            // TODO: If your application contains multiple pages, ensure that you are
-            // handling the hardware Back button by registering for the
-            // Windows.Phone.UI.Input.HardwareButtons.BackPressed event.
-            // If you are using the NavigationHelper provided by some templates,
-            // this event is handled for you.
+            if (!string.IsNullOrWhiteSpace(AuthManager.GetCredential("token")) && !string.IsNullOrWhiteSpace(AuthManager.GetCredential("userdata")))
+            {
+                Frame.Navigate(typeof(Home));
+                return;
+            }
         }
     }
 }
