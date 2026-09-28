@@ -31,8 +31,6 @@ namespace MetroDirecte.API
 
         public async static Task<bool> RenewLogin()
         {
-            return true; // JV LE FINIR PLUS TARD SA CLC
-
             if (
                 string.IsNullOrWhiteSpace(GetCredential("token")) ||
                 string.IsNullOrWhiteSpace(GetCredential("userdata")) ||
@@ -40,27 +38,60 @@ namespace MetroDirecte.API
             )
                 return false;
 
+            JObject userData = GetUserData();
+
             var api = new APIManager();
+
+            api.ResetCacheToken();
+
+            string gtk = await api.GetGTKAsync();
+
+            JObject reqdata = new JObject
+            {
+                { "identifiant", userData["identifiant"] },
+                { "motdepasse", "" },
+                { "isReLogin", true },
+                { "uuid", GetCredential("uuid") },
+                { "typeCompte", userData["typeCompte"] },
+                { "accesstoken", userData["access_token"] }
+            };
+
+            if(!string.IsNullOrWhiteSpace(GetCredential("cn")) && !string.IsNullOrWhiteSpace(GetCredential("cv")))
+            {
+                reqdata["cn"] = GetCredential("cn");
+                reqdata["cv"] = GetCredential("cv");
+                reqdata["fa"] =
+                    new JArray()
+                    {
+                        new JObject()
+                        {
+                            { "cn", GetCredential("cn") },
+                            { "cv", GetCredential("cv") },
+                            { "uniq", false }
+                        }
+                    };
+            }
+            else
+            {
+                reqdata["fa"] = new JArray();
+            }
 
             string json = await api.PostAsync(
                 "/v3/login.awp?v=4.102.1",
-                new JObject
-                {
-                    { "identifiant", GetCredential("username") },
-                    { "motdepasse", "" },
-                    { "isReLogin", true },
-                    { "uuid", GetCredential("uuid") },
-                    { "fa", new JArray() }
-                },
+                reqdata,
                 GetCredential("token"),
-                null
+                gtk
             );
 
             JObject data = JObject.Parse(json);
 
             int code = (int)data["code"];
-            string token = (string)data["token"];
-            string message = (string)data["message"];
+
+            if (code != 200)
+                return false;
+
+            SaveCredential("token", (string)data["token"]);
+            SaveCredential("userdata", data["data"]["accounts"][0].ToString());
 
             return true;
         }

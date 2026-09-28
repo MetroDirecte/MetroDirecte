@@ -187,6 +187,9 @@ namespace MetroDirecte
                 return;
             }
 
+            AuthManager.SaveCredential("cn", cn);
+            AuthManager.SaveCredential("cv", cv);
+
             FinishLogin(data);
         }
 
@@ -204,6 +207,9 @@ namespace MetroDirecte
                         AuthManager.SaveCredential("uuid", uuid);
                     }
                 }
+
+                AuthManager.DeleteCredential("cn");
+                AuthManager.DeleteCredential("cv");
 
                 LoginButton.IsEnabled = false;
                 ErrorText.Text = "";

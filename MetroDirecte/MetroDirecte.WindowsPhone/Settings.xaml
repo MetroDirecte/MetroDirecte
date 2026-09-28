@@ -1,0 +1,41 @@
+﻿<Page
+    x:Class="MetroDirecte.Settings"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MetroDirecte"
+    xmlns:controls="using:MetroDirecte.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="20,25,20,30">
+                <TextBlock Text="paramètres" FontSize="50" Margin="0,0,0,30"/>
+
+                <TextBlock Text="COMPTE" FontSize="14" Opacity="0.65" Margin="0,0,0,8"/>
+                <Border Padding="16" Margin="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock Text="Compte EcoleDirecte" FontSize="20" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="Username" Text="chargement du nom" FontSize="16" Opacity="0.7" Margin="0,5,0,15"/>
+                        <Button x:Name="LogoutButton" Content="déconnecter" HorizontalAlignment="Left" Click="LogoutButton_Click"/>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Text="APPARENCE" FontSize="14" Opacity="0.65" Margin="0,0,0,8"/>
+                <Border Padding="16" Margin="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock Text="Thème" FontSize="20"/>
+                        <TextBlock Text="utiliser le thème du téléphone" FontSize="15" Opacity="0.65" Margin="0,4,0,0"/>
+                        <ToggleSwitch Header="thème système" IsOn="True" Margin="0,12,0,0"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+        <controls:BottomBar Grid.Row="1"/>
+    </Grid>
+</Page>

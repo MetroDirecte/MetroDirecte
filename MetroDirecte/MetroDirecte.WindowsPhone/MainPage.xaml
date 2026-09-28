@@ -7,120 +7,120 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    
+
     <Grid>
         <StackPanel
-        Margin="30"
-        VerticalAlignment="Center">
+            Margin="30"
+            VerticalAlignment="Center">
 
             <TextBlock
-            Text="MetroDirecte"
-            FontSize="40"
-            Margin="0,0,0,0" />
+                Text="MetroDirecte"
+                FontSize="40"
+                Margin="0,0,0,0" />
 
             <TextBlock
-            Text="connectez-vous"
-            FontSize="22"
-            Margin="0,0,0,40" />
+                Text="connectez-vous"
+                FontSize="22"
+                Margin="0,0,0,40" />
 
             <TextBlock
-            Text="identifiant"
-            FontSize="20" />
+                Text="identifiant"
+                FontSize="20" />
             <TextBox
-            x:Name="UsernameBox"
-            PlaceholderText="identifiant"
-            Margin="0,5,0,20" />
+                x:Name="UsernameBox"
+                PlaceholderText="identifiant"
+                Margin="0,5,0,20" />
 
             <TextBlock
-            Text="mot de passe"
-            FontSize="20" />
+                Text="mot de passe"
+                FontSize="20" />
             <PasswordBox
-            x:Name="PasswordBox"
-            PlaceholderText="mot de passe"
-            Margin="0,5,0,30" />
-            
+                x:Name="PasswordBox"
+                PlaceholderText="mot de passe"
+                Margin="0,5,0,30" />
+
             <Button
-            x:Name="LoginButton"
-            Content="connexion"
-            Click="LoginButton_Click" />
+                x:Name="LoginButton"
+                Content="connexion"
+                Click="LoginButton_Click" />
 
             <TextBlock
-            x:Name="ErrorText"
-            Text=""
-            Foreground="Red"
-            FontSize="16"
-            TextWrapping="Wrap"
-            Margin="0,0,0,0" />
+                x:Name="ErrorText"
+                Text=""
+                Foreground="Red"
+                FontSize="16"
+                TextWrapping="Wrap"
+                Margin="0,0,0,0" />
 
         </StackPanel>
 
         <Grid
-            x:Name="ConnectionAttempt"
-            Visibility="Collapsed"
-            Background="#99000000">
-            
+                x:Name="ConnectionAttempt"
+                Visibility="Collapsed"
+                Background="#99000000">
+
             <Border
-                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                CornerRadius="8"
-                Padding="20"
-                Margin="20"
-                VerticalAlignment="Center">
+                    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                    CornerRadius="8"
+                    Padding="20"
+                    Margin="20"
+                    VerticalAlignment="Center">
 
                 <TextBlock
-                Text="connexion en cours"
-                FontSize="35"
-                TextWrapping="Wrap"
-                Margin="0,0,0,0" />
+                    Text="connexion en cours"
+                    FontSize="35"
+                    TextWrapping="Wrap"
+                    Margin="0,0,0,0" />
 
             </Border>
 
         </Grid>
 
         <Grid
-            x:Name="QcmOverlay"
-            Visibility="Collapsed"
-            Background="#99000000">
+                x:Name="QcmOverlay"
+                Visibility="Collapsed"
+                Background="#99000000">
 
             <Border
-                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                CornerRadius="8"
-                Padding="20"
-                Margin="20"
-                VerticalAlignment="Center">
+                    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                    CornerRadius="8"
+                    Padding="20"
+                    Margin="20"
+                    VerticalAlignment="Center">
 
                 <StackPanel>
 
                     <TextBlock
-                        Text="confirmez votre identité"
-                        FontSize="30"
-                        Margin="0,0,0,10" />
+                            Text="confirmez votre identité"
+                            FontSize="30"
+                            Margin="0,0,0,10" />
 
                     <TextBlock
-                        Text="répondez à la question suivante pour continuer."
-                        FontSize="16"
-                        TextWrapping="Wrap"
-                        Margin="0,0,0,20" />
+                            Text="répondez à la question suivante pour continuer."
+                            FontSize="16"
+                            TextWrapping="Wrap"
+                            Margin="0,0,0,20" />
 
                     <TextBlock
-                        x:Name="QcmQuestion"
-                        FontSize="22"
-                        TextWrapping="Wrap"
-                        Margin="0,0,0,20" />
+                            x:Name="QcmQuestion"
+                            FontSize="22"
+                            TextWrapping="Wrap"
+                            Margin="0,0,0,20" />
 
                     <ScrollViewer
-                        MaxHeight="300"
-                        VerticalScrollBarVisibility="Auto">
+                            MaxHeight="300"
+                            VerticalScrollBarVisibility="Auto">
 
                         <StackPanel
-                            x:Name="QcmPropositions" />
+                                x:Name="QcmPropositions" />
 
                     </ScrollViewer>
 
                     <TextBlock
-                        x:Name="QcmError"
-                        Foreground="Red"
-                        TextWrapping="Wrap"
-                        Margin="0,15,0,0" />
+                            x:Name="QcmError"
+                            Foreground="Red"
+                            TextWrapping="Wrap"
+                            Margin="0,15,0,0" />
 
                 </StackPanel>
 

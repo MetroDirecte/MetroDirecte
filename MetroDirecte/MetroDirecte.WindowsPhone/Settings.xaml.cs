@@ -11,9 +11,9 @@ using Windows.Security.Credentials;
 
 namespace MetroDirecte
 {
-    public sealed partial class Home : Page
+    public sealed partial class Settings : Page
     {
-        public Home()
+        public Settings()
         {
             this.InitializeComponent();
 
@@ -41,6 +41,10 @@ namespace MetroDirecte
                 Frame.Navigate(typeof(MainPage));
                 return;
             }
+
+            JObject userData = AuthManager.GetUserData();
+
+            Username.Text = (string)userData["identifiant"];
         }
     }
 }
